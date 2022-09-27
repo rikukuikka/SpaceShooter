@@ -19,15 +19,14 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _tripleShotPrefab;
     private bool _isTripleShotActive = false;
-    private bool _isSpeedBoostActive = false;
     private bool _isShieldActive = false;
     [SerializeField]
     private GameObject _shields;
     [SerializeField]
     private int _score;
     private UIManager _canvas;
-
-
+    [SerializeField]
+    private GameObject _leftEngine, _rightEngine;
 
     // Start is called before the first frame update
     void Start()
@@ -101,6 +100,30 @@ public class Player : MonoBehaviour
             return;
         }
         _lives--;
+        if (_lives == 2)
+        {
+            int engine = Random.Range(0, 2);
+            if (engine == 0)
+            {
+                _rightEngine.SetActive(true);
+            }
+            else
+            {
+                _leftEngine.SetActive(true);
+            }
+
+        }
+        else if (_lives == 1)
+        {
+            if (_leftEngine.activeSelf)
+            {
+                _rightEngine.SetActive(true);
+            }
+            else
+            {
+                _leftEngine.SetActive(true);
+            }
+        }
         _canvas.UpdateLives(_lives);
         if (_lives < 1)
         {
@@ -123,7 +146,6 @@ public class Player : MonoBehaviour
 
     public void SpeedActive()
     {
-        _isSpeedBoostActive = true;
         _speed = _speed * _speedMultiplier;
         StartCoroutine(SpeedPowerDownRoutine());
     }
@@ -131,7 +153,6 @@ public class Player : MonoBehaviour
     IEnumerator SpeedPowerDownRoutine()
     {
         yield return new WaitForSeconds(5.0f);
-        _isSpeedBoostActive = false;
         _speed = _speed / _speedMultiplier;
     }
 
