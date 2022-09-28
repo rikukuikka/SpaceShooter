@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Explosion : MonoBehaviour
 {
-    // Start is called before the first frame update
+     // Start is called before the first frame update
     void Start()
     {
         Destroy(this.gameObject, 3.0f);
@@ -13,6 +13,6 @@ public class Explosion : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }

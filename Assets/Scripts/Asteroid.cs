@@ -9,6 +9,8 @@ public class Asteroid : MonoBehaviour
     [SerializeField]
     private GameObject _explosionPrefab;
     private SpawnManager _spawnManager;
+
+
     // Start is called before the first frame update
     void Start()
     {
