@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -30,14 +31,22 @@ public class Player : MonoBehaviour
     [SerializeField]
     private AudioClip _laserSound;
     private AudioSource _audioSource;
+    private GameManager _gameManager;
+    [SerializeField]
+    private bool _isPlayer1 = false;
+    [SerializeField]
+    private bool _isPlayer2 = false;
+    private Animator _animator;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        transform.position = new Vector3(0, 0, 0);
         _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
         _canvas = GameObject.Find("Canvas").GetComponent<UIManager>();
+        _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
         _audioSource = GetComponent<AudioSource>();
+        _animator = GetComponent<Animator>();
 
         if (_spawnManager == null)
         {
@@ -57,22 +66,85 @@ public class Player : MonoBehaviour
         {
             _audioSource.clip = _laserSound;
         }
+
+        if (_gameManager == null)
+        {
+            Debug.LogError("Game manager is NULL");
+        }
+
+        if (_animator == null)
+        {
+            Debug.LogError("Player animator is NULL.");
+        }
+
+        if (_gameManager.IsCoopMode() == false)
+        {
+            transform.position = new Vector3(0, 0, 0);
+        }
+        else
+        {
+            if (_isPlayer1)
+            {
+                transform.position = new Vector3(1.5f, 0, 0);
+            }
+            else
+            {
+                transform.position = new Vector3(-1.5f, 0, 0);
+            }
+
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
         CalculateMovement();
-        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
+
+        if (_isPlayer1)
         {
-            fireLaser();
+            if (Input.GetButtonDown("Fire1") && Time.time > _canFire)
+            {
+                fireLaser();
+            }
+        }
+        else
+        {
+            if (Input.GetButtonDown("Fire2") && Time.time > _canFire)
+            {
+                fireLaser();
+            }
+
         }
     }
 
     void CalculateMovement()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
+        float horizontalInput;
+        float verticalInput;
+        if (_isPlayer1)
+        {
+            horizontalInput = Input.GetAxis("Horizontal1");
+            verticalInput = Input.GetAxis("Vertical1");
+        }
+        else
+        {
+            horizontalInput = Input.GetAxis("Horizontal2");
+            verticalInput = Input.GetAxis("Vertical2");
+        }
+        if (horizontalInput > 0)
+        {
+            _animator.SetBool("Turn_Right", true);
+
+        }
+        else if (horizontalInput < 0)
+        {
+            _animator.SetBool("Turn_Left", true);
+        }
+        else
+        {
+            _animator.SetBool("Turn_Right", false);
+            _animator.SetBool("Turn_Left", false);
+        }
 
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
 

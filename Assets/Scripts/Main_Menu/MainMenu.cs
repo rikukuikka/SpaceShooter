@@ -5,8 +5,13 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
-    public void LoadGame()
+    public void LoadSinglePlayerGame()
     {
         SceneManager.LoadScene(1);
+    }
+
+    public void LoadCoOpGame()
+    {
+        SceneManager.LoadScene(2);
     }
 }

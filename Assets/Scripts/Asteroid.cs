@@ -34,6 +34,7 @@ public class Asteroid : MonoBehaviour
         {
             Instantiate(_explosionPrefab, this.transform.position, Quaternion.identity);
             Destroy(other.gameObject);
+            Destroy(GetComponent<Collider2D>());
             _spawnManager.StartSpawning();
             Destroy(this.gameObject, 0.25f);
         }
