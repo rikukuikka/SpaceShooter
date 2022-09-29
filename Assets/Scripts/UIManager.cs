@@ -17,11 +17,17 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     private Text _restartText;
     private GameManager _gameManager;
+    private int _bestScore;
+    [SerializeField]
+    private Text _bestScoreText;
+    private int _score;
 
     // Start is called before the first frame update
     void Start()
     {
+        _bestScore = PlayerPrefs.GetInt("BestScore", 0);
         _scoreText.text = "Score: 0";
+        _bestScoreText.text = "Best: " + _bestScore;
         _restartText.gameObject.SetActive(false);
         _gameOverText.gameObject.SetActive(false);
         _gameManager = GameObject.Find("Game_Manager").GetComponent<GameManager>();
@@ -39,7 +45,8 @@ public class UIManager : MonoBehaviour
 
     public void UpdateScore(int score)
     {
-        _scoreText.text = "Score: " + score;
+        _score = score;
+        _scoreText.text = "Score: " + _score;
     }
 
     public void UpdateLives(int currentLives)
@@ -48,11 +55,22 @@ public class UIManager : MonoBehaviour
         {
             currentLives = 0;
         }
-        
+
         _livesImg.sprite = _liveSprites[currentLives];
         if (currentLives == 0)
         {
+            UpdateBestScore();
             GameOverSequence();
+        }
+    }
+
+    private void UpdateBestScore()
+    {
+        if (_score > _bestScore)
+        {
+            _bestScore = _score;
+            _bestScoreText.text = "Best: " + _bestScore;
+            PlayerPrefs.SetInt("BestScore", _bestScore);
         }
     }
 
